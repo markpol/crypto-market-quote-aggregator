@@ -6,7 +6,7 @@ require('ansicolor').nice
 
 const ExchangeTicketFetcher = require('./exchangeTickerFetcher');
 const Persister = require('./persister');
-const wait = process.env.INTERVAL_SECONDS || 30000;
+const wait = process.env.INTERVAL_MILLISECONDS || 30000;
 
 let printUsage = () => {
     log('Usage: node', process.argv[1], 'symbol'.green)
@@ -48,7 +48,7 @@ let processExchanges = async (fetcher, persister) => {
 
             while(true) {
                 await processExchanges(fetcher, persister);
-                log.yellow('Waiting ' + wait/1000 + 'seconds');
+                log.yellow('Waiting ' + wait/1000 + ' seconds');
                 await sleep(wait);
             }
 
