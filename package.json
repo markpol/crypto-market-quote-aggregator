@@ -1,0 +1,20 @@
+{
+  "name": "crypto-market-quote-aggregator",
+  "version": "1.0.0",
+  "description": "Aggregate crypto currency market price quotes from multiple exchanges.",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mark Pietrusinski",
+  "license": "ISC",
+  "dependencies": {
+    "ansicolor": "^1.1.71",
+    "any-db": "^2.2.0",
+    "any-db-postgres": "^2.1.5",
+    "as-table": "^1.0.31",
+    "ccxt": "^1.10.671",
+    "lodash": "^4.17.4",
+    "ololog": "^1.1.83"
+  }
+}
