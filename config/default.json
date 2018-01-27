@@ -1,0 +1,38 @@
+{
+  "database": {
+    "driver": "postgres",
+    "host": "db",
+    "user": "cmqa",
+    "pass": "cmqa",
+    "schema": "cmqa"
+  },
+  "fetcher": {
+    "includeExchanges": [],
+    "excludeExchanges": [
+      "coinmarketcap",
+      "livecoin",
+      "southxchange",
+      "yobit",
+      "_1broker",
+      "bitstamp1",
+      "bitfinex",
+      "liqui",
+      "xbtce",
+      "braziliex",
+      "bter",
+      "yunbi",
+      "flowbtc",
+      "bitmex",
+      "cryptopia",
+      "okex",
+      "getbtc",
+      "coinspot",
+      "btcexchange"
+    ],
+    "includeSymbols": [],
+    "excludeSymbols": []
+  },
+  "concurrency": 10,
+  "maxExchangeFetchFailures": 3,
+  "waitIntervalMilliseconds": 30000
+}

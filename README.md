@@ -17,5 +17,5 @@ npm install
 
 3. Run script
 ```bash
-node main.js USD/BTC
+node main.js
 ```

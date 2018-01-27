@@ -6,4 +6,4 @@ COPY . /crypto-market-quote-aggregator
 
 RUN npm install
 
-CMD ["node", "main.js", "BTC/USD"]
+CMD ["node", "main.js"]

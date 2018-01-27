@@ -1,5 +1,7 @@
 
-_postgresql
+/_postgresql
+/config/development.json
+/config/production.json
 
 #IDE
 .idea/

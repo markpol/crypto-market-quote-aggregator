@@ -1,14 +1,5 @@
 version: '3'
 services:
-  cmqa:
-    restart: always
-    build:
-      context: ./
-    env_file:
-      - ./env
-    links:
-      - db
-    tty: true
   db:
     restart: always
     image: postgres:9.6-alpine
@@ -20,3 +11,14 @@ services:
       POSTGRES_DB: cmqa
       POSTGRES_USER: cmqa
       POSTGRES_PASSWORD: cmqa
+  cmqa:
+    restart: always
+    build:
+      context: ./
+    env_file:
+      - ./env
+    links:
+      - db
+    depends_on:
+      - db
+    tty: true

@@ -1,62 +1,58 @@
 "use strict";
 
 const log = require('ololog');
-
-require('ansicolor').nice
-
+const config = require('config');
+require('ansicolor').nice;
 const ExchangeTicketFetcher = require('./exchangeTickerFetcher');
 const Persister = require('./persister');
-const wait = process.env.INTERVAL_MILLISECONDS || 30000;
+const PromiseLimit = require('promise-limit');
 
-let printUsage = () => {
-    log('Usage: node', process.argv[1], 'symbol'.green)
-};
+let promiseLimit = new PromiseLimit(config.concurrency);
 
 let sleep = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms))
 };
 
-let processExchanges = async (fetcher, persister) => {
-    for (let id in fetcher.exchanges) {
-        let exchange = fetcher.exchanges[id];
-        if (exchange.enabled) {
-            try {
-                log.yellow(id);
-                let ticker = await fetcher.fetchExchangeTicker(exchange.client);
-                log.dim(ticker);
-                if (ticker) {
-                    persister.insertQuote(id, ticker);
-                }
+let processExchanges = (fetcher, persister) => {
+    return Promise.all(
+        fetcher.getAllFetchableExchangeMarkets().map((exchangeMarket) => {
+            return promiseLimit(() => processExchangeMarket(exchangeMarket.exchange, exchangeMarket.symbol, persister))
+        })
+    ).then(results => {
+        log.yellow('Exchange initialization complete...');
+        // log.yellow(results)
+    });
+};
 
-            } catch (e) {
-                log.error(id.red, e.toString ().red);
+let processExchangeMarket = (exchange, symbol, persister) => {
+    log.yellow('Fetching "' + symbol + '" quotes on ' + exchange.id);
+    return exchange.client.fetchTicker(symbol)
+        .then((result) => {
+            //log.dim(result);
+            persister.insertQuote(exchange.id, result);
+
+        }).catch((error) => {
+            log.error(exchange.id.red, error.toString().red);
+            exchange.failures++;
+            if (exchange.failures > config.maxExchangeFetchFailures) {
                 exchange.enabled = false
             }
-        }
-    }
+            throw error;
+        })
 };
 
 (async function main () {
 
-        if (process.argv.length > 2) {
+    let persister = new Persister(config.database);
 
-            let symbol = process.argv[2].toUpperCase();
-            let fetcher = new ExchangeTicketFetcher(symbol);
-            await fetcher.init();
+    let fetcher = new ExchangeTicketFetcher(config.fetcher, promiseLimit);
+    await fetcher.init();
 
-            let persister = new Persister();
-
-            while(true) {
-                await processExchanges(fetcher, persister);
-                log.yellow('Waiting ' + wait/1000 + ' seconds');
-                await sleep(wait);
-            }
-
-        } else {
-            printUsage ()
-        }
-
-    //process.exit();
+    while(true) {
+        await processExchanges(fetcher, persister);
+        log.yellow('Waiting ' + config.waitIntervalMilliseconds/1000 + ' seconds');
+        await sleep(config.waitIntervalMilliseconds);
+    }
 
 }) ();
 

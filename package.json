@@ -14,7 +14,9 @@
     "any-db-postgres": "^2.1.5",
     "as-table": "^1.0.31",
     "ccxt": "^1.10.671",
+    "config": "^1.29.2",
     "lodash": "^4.17.4",
-    "ololog": "^1.1.83"
+    "ololog": "^1.1.83",
+    "promise-limit": "^2.5.0"
   }
 }
