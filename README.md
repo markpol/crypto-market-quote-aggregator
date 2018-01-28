@@ -1,6 +1,8 @@
 # crypto-market-quote-aggregator
 Node JS app to aggregate and persist crypto currency market prices from 90+ exchanges.  Quotes are persisted to a Postgresql database in a docker container or standalone.
 
+see:   https://github.com/ccxt/ccxt for supported exchanges
+
 ### Setup configuration file:
 Copy config/production.sample.json to config/production.json and modify as required.  default.json values will be overridden by file with same name as NODE_ENV environment variable
 
