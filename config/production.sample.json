@@ -1,0 +1,21 @@
+{
+  "database": {
+    "host": "db"
+  },
+  "fetcher": {
+    "includeExchanges": [
+      "bitfinex2",
+      "kraken",
+      "bitstamp",
+      "hitbtc2",
+      "poloniex",
+      "cex"
+    ],
+    "includeSymbols": [
+      "BTC/USD",
+      "BTC/EUR",
+      "ETH/USD",
+      "ETH/EUR"
+    ]
+  }
+}

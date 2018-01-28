@@ -5,16 +5,25 @@ const log       = require('ololog');
 
 class Persister  {
     constructor(config) {
-        this.conn = anyDB.createPool(config.driver+'://'+config.user+':'+config.pass+'@'+config.host+'/' + config.schema, {
-            min: 5, max: 15,
-            reset: function (conn, done) {
-                conn.query('ROLLBACK', done)
-            }
-        });
-        this.init()
+        this.connectionString = config.driver+'://'+config.user+':'+config.pass+'@'+config.host+'/' + config.schema;
     }
 
-    init() {
+    async createConnectionPool()
+    {
+        return new Promise(resolve => {
+            let pool = anyDB.createPool(this.connectionString, {
+                min: 5,
+                max: 15
+            });
+            resolve(pool)
+        }).then(pool => {
+            this.pool = pool;
+        });
+    }
+
+    async init() {
+        await this.createConnectionPool();
+
         const sql = `CREATE TABLE IF NOT EXISTS quotes (
                   id BIGSERIAL PRIMARY KEY,
                   symbol VARCHAR (16) NOT NULL,
@@ -26,12 +35,16 @@ class Persister  {
                   volume double precision DEFAULT NULL,
                   timestamp TIMESTAMP NOT NULL
                 );`;
-        log(sql);
-        this.conn.query(sql, function (error, result) {
-            if (error) {
-                log.error(error)
-            }
-        })
+
+        return new Promise(resolve => {
+            log(sql);
+            resolve(this.pool.query(sql, (error) => {
+                if (error) {
+                    log.error(error);
+                }
+            }))
+        });
+
     };
 
     insertQuote(exchange, ticker) {
@@ -39,7 +52,7 @@ class Persister  {
             let sql = `INSERT INTO quotes (symbol, exchange, high, low, bid, ask, volume, "timestamp") VALUES ($1, $2, $3, $4, $5, $6, $7, $8);`;
             let data = [ticker.symbol, exchange, ticker.high, ticker.low, ticker.bid, ticker.ask, ticker.baseVolume, ticker.datetime];
             log(sql, data);
-            this.conn.query(
+            this.pool.query(
                 sql,
                 data,
                 function (error, result) {

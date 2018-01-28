@@ -34,5 +34,5 @@
   },
   "concurrency": 10,
   "maxExchangeFetchFailures": 3,
-  "waitIntervalMilliseconds": 30000
+  "waitIntervalSeconds": 30
 }

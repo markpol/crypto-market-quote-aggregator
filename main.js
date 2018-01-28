@@ -44,14 +44,15 @@ let processExchangeMarket = (exchange, symbol, persister) => {
 (async function main () {
 
     let persister = new Persister(config.database);
+    await persister.init();
 
     let fetcher = new ExchangeTicketFetcher(config.fetcher, promiseLimit);
     await fetcher.init();
 
     while(true) {
         await processExchanges(fetcher, persister);
-        log.yellow('Waiting ' + config.waitIntervalMilliseconds/1000 + ' seconds');
-        await sleep(config.waitIntervalMilliseconds);
+        log.yellow('Waiting ' + config.waitIntervalSeconds + ' seconds');
+        await sleep(config.waitIntervalSeconds * 1000);
     }
 
 }) ();

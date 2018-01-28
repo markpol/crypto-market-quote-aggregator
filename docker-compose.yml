@@ -1,16 +1,5 @@
 version: '3'
 services:
-  db:
-    restart: always
-    image: postgres:9.6-alpine
-    ports:
-      - 5432:5432
-    volumes:
-      - ./_postgresql:/var/lib/postgresql/data:rw
-    environment:
-      POSTGRES_DB: cmqa
-      POSTGRES_USER: cmqa
-      POSTGRES_PASSWORD: cmqa
   cmqa:
     restart: always
     build:
@@ -22,3 +11,15 @@ services:
     depends_on:
       - db
     tty: true
+    command: ["./wait-for-it.sh", "db:5432", "--", "node", "main.js"]
+  db:
+    restart: always
+    image: postgres:9.6-alpine
+    ports:
+      - 5432:5432
+    volumes:
+      - ./_postgresql:/var/lib/postgresql/data:rw
+    environment:
+      POSTGRES_DB: cmqa
+      POSTGRES_USER: cmqa
+      POSTGRES_PASSWORD: cmqa
