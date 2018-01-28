@@ -37,7 +37,6 @@ let processExchangeMarket = (exchange, symbol, persister) => {
             if (exchange.failures > config.maxExchangeFetchFailures) {
                 exchange.enabled = false
             }
-            throw error;
         })
 };
 
