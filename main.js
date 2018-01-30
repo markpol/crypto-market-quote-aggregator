@@ -19,7 +19,7 @@ let processExchanges = (fetcher, persister) => {
             return promiseLimit(() => processExchangeMarket(exchangeMarket.exchange, exchangeMarket.symbol, persister))
         })
     ).then(results => {
-        log.yellow('Exchange initialization complete...');
+        log.yellow('Fetched exchange prices complete...');
         // log.yellow(results)
     });
 };
